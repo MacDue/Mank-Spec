@@ -2,11 +2,11 @@
 
 ### Letters and digits
 
-```
+```ebnf
 letter = ('A' .. 'Z') | ('a' .. 'z') ;
 
 decimal_digits = digit, { digit } ;
-digit =  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 ;
+digit =  '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
 ```
 
 ### Comments
@@ -27,7 +27,7 @@ All comments are treated as whitespace, and they don't currently have any semant
 
 Integer literals are sequences of digits representing a integer constant.
 
-```
+```ebnf
 integer_literal = decimal_digits ;
 ```
 
@@ -48,7 +48,7 @@ Floating point literals are decimal representations of floating point constants.
 
 Floating point literals consist of a integer part, decimal point, and a fractional part. The fractional part may be omitted (though keeping the decimal point).
 
-```
+```ebnf
 floating_point_literal = decimal_digits, '.', [ decimal_digits ] ;
 ```
 
@@ -66,7 +66,7 @@ floating_point_literal = decimal_digits, '.', [ decimal_digits ] ;
 
 Indentifiers name things within a program, such as varaibles and functions. Indentifiers must start with a letter or underscore, and then can be followed by any number of letters, underscores, or numbers.
 
-```
+```ebnf
 indentifier = (letter | '_'), { letter | digit | '_' } ;
 ```
 
