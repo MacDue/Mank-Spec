@@ -4,6 +4,7 @@
 
 ```ebnf
 letter = ('A' .. 'Z') | ('a' .. 'z') ;
+character = (* any valid character *) ;
 
 decimal_digits = digit, { digit } ;
 digit =  '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
@@ -62,12 +63,12 @@ floating_point_literal = decimal_digits, '.', [ decimal_digits ] ;
 093.0     # = 93.0
 ```
 
-### Indentifiers
+### Identifiers
 
-Indentifiers name things within a program, such as varaibles and functions. Indentifiers must start with a letter or underscore, and then can be followed by any number of letters, underscores, or numbers.
+Identifiers name things within a program, such as varaibles and functions. Identifiers must start with a letter or underscore, and then can be followed by any number of letters, underscores, or numbers.
 
 ```ebnf
-indentifier = (letter | '_'), { letter | digit | '_' } ;
+identifiers = (letter | '_'), { letter | digit | '_' } ;
 ```
 
 ```mank
@@ -82,13 +83,15 @@ fooBar
 ### Keywords
 
 ```
-fun    proc   domain  until   pod    bind   continue
+fun    proc   domain  until   pod    bind   continue  const
 of     spawn  if      return  ref    loop   as
 else   for    while   true    false  break  test
 ```
+These are reserved and cannot be used as identifiers.
 
 ### Operators and punctuation
 
+Operators and various types of assignment, along with punctuation:
 ```
 |!  ||  <<  >>  >=  <=  ==  !=  &&  +=  -=  |=  &=
 /=  *=  %=  +   -   /   *   %   <   >   ~   &   |
@@ -98,8 +101,36 @@ else   for    while   true    false  break  test
 
 ### Character literals
 
-### String literals
+Character literals represent ASCII character constants.
+
+
+Character literals consist of a single (optionally escaped with `\`) character surrounded by single quotes.
+
+```ebnf
+character_literal = "'", [ "\" ], character, "'" ;
+```
 
 ```mank
-"Hello World", "I'm on a type writer!\r\n", "Name set to \"Ben\""
+'a'
+'\n'  # a newline
+'\e'  # escape char
+'\''  # a single quote (') character
+'"'
+```
+
+### String literals
+
+String literals represent a string constant, which is a sequence of characters.
+
+
+String literals can contain escaped characters (in the same way as in character literals).
+
+```ebnf
+string_literal = '"', { ['\'], character }, '"'
+```
+
+```mank
+"Hello World"
+"I'm on a type writer!\r\n"  # string with legacy line ending
+"Name set to \"Ben\""        # string containing escaped double quotes
 ```
