@@ -84,7 +84,7 @@ fooBar
 
 ```
 fun    proc   domain  until   pod    bind   continue  const
-of     spawn  if      return  ref    loop   as
+of     spawn  if      return  ref    loop   as        in
 else   for    while   true    false  break  test
 ```
 These are reserved and cannot be used as identifiers.
