@@ -26,13 +26,13 @@ All comments are treated as whitespace, and they don't currently have any semant
 
 ### Integer literals
 
-Integer literals are sequences of digits representing a integer constant.
+Integer literals are sequences of digits representing an integer constant.
 
 ```ebnf
 integer_literal = decimal_digits ;
 ```
 
-There's currently no special prefixes to allow for different bases.
+There are currently no special prefixes to allow for different bases.
 
 ```mank
 42
@@ -42,12 +42,12 @@ There's currently no special prefixes to allow for different bases.
 100
 ```
 
-### Floating point literals
+### Floating-point literals
 
-Floating point literals are decimal representations of floating point constants.
+Floating-point literals are decimal representations of floating-point constants.
 
 
-Floating point literals consist of a integer part, decimal point, and a fractional part. The fractional part may be omitted (though keeping the decimal point).
+Floating-point literals consist of an integer part, decimal point, and a fractional part. The fractional part may be omitted (though keeping the decimal point).
 
 ```ebnf
 floating_point_literal = decimal_digits, '.', [ decimal_digits ] ;
@@ -65,7 +65,7 @@ floating_point_literal = decimal_digits, '.', [ decimal_digits ] ;
 
 ### Identifiers
 
-Identifiers name things within a program, such as varaibles and functions. Identifiers must start with a letter or underscore, and then can be followed by any number of letters, underscores, or numbers.
+Identifiers name things within a program, such as variables and functions. Identifiers must start with a letter or underscore, and then can be followed by any number of letters, underscores, or numbers.
 
 ```ebnf
 identifiers = (letter | '_'), { letter | digit | '_' } ;
@@ -131,6 +131,6 @@ string_literal = '"', { ['\'], character }, '"'
 
 ```mank
 "Hello World"
-"I'm on a type writer!\r\n"  # string with legacy line ending
+"I'm on a typewriter!\r\n"  # string with legacy line ending
 "Name set to \"Ben\""        # string containing escaped double quotes
 ```
