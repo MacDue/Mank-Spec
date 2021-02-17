@@ -103,7 +103,7 @@ pod MyPod {
 
 ### Tuple types
 
-A tuple is a unnamed collection of (also unnamed) elements of various types.
+A tuple is an unnamed collection of (also unnamed) elements of various types.
 The empty tuple is used as the void type (`void` in C or C++).
 
 ```ebnf
@@ -113,7 +113,7 @@ TupleType = "(", [TypeList], ")" ;
 ```mank
 ()                         # empty tuple/void
 (i32, bool)                # tuple of i32 and bool
-(MyPod, (i32, f64), bool)  # tuple of a pod type, a nested tuple and a bool
+(MyPod, (i32, f64), bool)  # tuple of a pod type, a nested tuple, and a bool
 (char)                     # one element tuple
 ```
 
@@ -137,3 +137,34 @@ ReturnType = Type ;
 ```
 
 ### List types
+
+Lists (also called vectors) hold a dynamic amount of elements of another type (the element type).
+The number of elements in a list can be queried with the `.length` attribute.
+
+```ebnf
+ListType = ElementType, "[", "]", ;
+ElementType = BaseType ;
+```
+
+```mank
+str[]           # list of strings
+i32[][]         # list of lists of integers
+(i32, bool)[]   # list of tuples of i32 and bool
+```
+
+### Type matches
+
+Types either match or are different.
+
+All named types (primitives like strings, bools, ints, along with pods) are always
+different to any other type (other than their own time).
+
+- At the top level, any type can be matched with a reference of its type.
+  - This excludes references nested in composite types.
+    -  e.g. ``(i32, ref bool) != (i32, bool)``.
+- Fixed-size arrays match if they're the same length and their element types match.
+- Lists match if their element types match.
+- Tuples match if all elements of the tuples match, in the same order.
+- Lambdas match if their parameters and return types with each other.
+
+Note for references there are additional restrictions on the types of values they can be assigned to alongside matching types.

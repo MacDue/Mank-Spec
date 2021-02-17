@@ -1,6 +1,7 @@
 # The Mank Programming Language Specification
 
 :[Introduction](./intro.md)
+<div class="page"/>
 
 :[Notation](./notation.md)
 

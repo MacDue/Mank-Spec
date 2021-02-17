@@ -1,3 +1,13 @@
 ## Builtin functions and macros
 
-// TODO
+### Vectors
+
+(new_vec, push_back, vec!)
+
+### I/O functions
+
+### Testing
+
+### Functional helpers
+
+
