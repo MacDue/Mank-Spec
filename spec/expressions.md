@@ -25,3 +25,5 @@
 ### Lambda expressions
 
 ### As casts
+
+### Switch expressions

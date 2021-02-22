@@ -17,7 +17,7 @@ Booleans represented by the `bool` type and can take the value `true` or `false`
 
 ### Numeric types
 
-Numeric types are sets of floating-point or integer types (which also includes `char`).
+Numeric types are floating-point or integer types (which also includes `char`).
 
 ```mank
 char  # set of all signed 8-bit integers (that use character literals)
@@ -81,25 +81,20 @@ that position in the string, as a `char`.
 
 ### Pod types
 
-A pod (from plain old data) is named a collection of named elements, called fields, each with its own associated type. The name of a pod and its fields are [identifiers](#identifiers). The pod's name must be unique among all other pods in a module, and each field name must be distinct from the others within a pod.
+A pod (from plain old data) is a collection of named elements, called fields, each with its own associated type.
 
-```ebnf
-PodType = "pod", "{", [Fields], "}" ;
-Fields = FieldDecl, { ",", FieldDecl }, [","] ;
-FieldDecl = identifier, ":", Type ;
-```
 
-```mank
-# An empty pod
-pod Empty {}
+Pod types are [declared](#pod-declarations) at the top level of a module and then referred to by name in the rest of the program.
 
-# Pod called "MyPod" with 3 fields (foo, bar, baz)
-pod MyPod {
-  foo: i32,
-  bar: bool[5],
-  baz: ref f64
-}
-```
+### Enum types
+
+An enum (from enumeration) is a collection of named members which may be used as constants within a program (e.g. each member could be a state).
+
+
+Optionally each member can be associated with tuple or pod-like data to form a tagged union. The data can then be extracted when matched against in [swtich expression](#switch-expressions).
+
+
+Enums are [declared](#enum-declarations) at the top level of a module and then referred to by name in the rest of the program.
 
 ### Tuple types
 
@@ -157,7 +152,7 @@ i32[][]         # list of lists of integers
 Types either match or are different.
 
 All named types (primitives like strings, bools, ints, along with pods) are always
-different to any other type (other than their own time).
+different to any other type (other than their own type).
 
 - At the top level, any type can be matched with a reference of its type.
   - This excludes references nested in composite types.
@@ -165,6 +160,13 @@ different to any other type (other than their own time).
 - Fixed-size arrays match if they're the same length and their element types match.
 - Lists match if their element types match.
 - Tuples match if all elements of the tuples match, in the same order.
-- Lambdas match if their parameters and return types with each other.
+- Lambdas match if their parameters and return types match respectively.
 
 Note for references there are additional restrictions on the types of values they can be assigned to alongside matching types.
+
+### Type storage
+
+All types with exception of [strings](#string-types) and [lists](#list-types) are stored on the stack,
+and are copied by value when assigned to a variable or passed to a function (for [reference types](#Reference-types) the value is just the pointer/memory address).
+
+Strings are either stored within the program's static data or on the heap (depending on if they're compile-time constants or not), and lists are always heap-allocated. When these types are copied only their internal pointers are copied. This poses no issues for strings (as they're immutable), but it does mean lists need to be explicitly copied in some cases (e.g. before passing a list to a function that does some in-place processing while also maintaining the original list).

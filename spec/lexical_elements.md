@@ -85,7 +85,7 @@ fooBar
 ```
 fun    proc   domain  until   pod    bind   continue  const
 of     spawn  if      return  ref    loop   as        in
-else   for    while   true    false  break  test
+else   for    while   true    false  break  test      enum
 ```
 These are reserved and cannot be used as identifiers.
 
@@ -132,5 +132,5 @@ string_literal = '"', { ['\'], character }, '"'
 ```mank
 "Hello World"
 "I'm on a typewriter!\r\n"  # string with legacy line ending
-"Name set to \"Ben\""        # string containing escaped double quotes
+"Name set to \"Ben\""       # string containing escaped double quotes
 ```
