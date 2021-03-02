@@ -46,7 +46,6 @@ const INVALID := INVALID + 1;
 Function declarations bind a [name](#identifiers) to a function.
 Mank supports several types of functions: functions (`fun`) which return a value, procedures (`proc`) that always return void, and `test` functions.
 
-
 "`test`" functions are a special case, and are used by the built-in test runner.
 If not building with the `--tests` flag they are not compiled.
 
@@ -70,6 +69,9 @@ with [lambdas](#lambda-expressions).
 A function is free to mutate any local variables, or parameters passed to it (though unless these are references or heap-allocated data like [lists](#list-types) this is not be
 observable outside the function).
 
+
+If a function body ends with an expression (without a semicolon after it), then that expression is returned from the function. Values can also be returned early, or explictly with [return statements](#return-statements).
+
 ```mank
 fun max: i32 (a: i32, b: i32) {
   if a > b { a } else { b}
@@ -77,7 +79,11 @@ fun max: i32 (a: i32, b: i32) {
 
 # the parentheses for the arguments can be omitted there are none
 fun get_version: str {
-  "Mank v0.1"
+  "Mank v0.1"   # implict return: final expression (no semicolon)
+}
+
+fun compareInt: i32 (a: i32, b: i32) {
+  return a - b; # explict return statement
 }
 
 proc main (args: str) {

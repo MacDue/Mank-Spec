@@ -147,6 +147,8 @@ i32[][]         # list of lists of integers
 (i32, bool)[]   # list of tuples of i32 and bool
 ```
 
+## Type and value properties
+
 ### Type matches
 
 Types either match or are different.
@@ -170,3 +172,28 @@ All types with exception of [strings](#string-types) and [lists](#list-types) ar
 and are copied by value when assigned to a variable or passed to a function (for [reference types](#Reference-types) the value is just the pointer/memory address).
 
 Strings are either stored within the program's static data or on the heap (depending on if they're compile-time constants or not), and lists are always heap-allocated. When these types are copied only their internal pointers are copied. This poses no issues for strings (as they're immutable), but it does mean lists need to be explicitly copied in some cases (e.g. before passing a list to a function that does some in-place processing while also maintaining the original list).
+
+### Assignability
+
+A value `x` is assignable to a type `T` if:
+  - x's type is identical to T.
+  - T is the target type in an [assignment statement](#assignments) and is a reference to x's type, in which case the referenced value is set to x.
+  - x's type is a reference to T, x will be (automatically) dereferenced to a value of type T.
+  - T is a reference to x's type at a binding point, and x is an lvalue.
+
+#### Binding points
+
+Binding points are the points in programs where new [references](#reference-types) can be introduced (or copied).
+Note that once a reference is bound, there's no way to change the reference to point to another value.
+
+
+References can only be assigned to lvalues, which are values that have a memory address (so can appear on the _left_ of an assigment). All other values are rvalues. For example, a named variable has a memory address, but a literal expression does not.
+
+
+The current binding points are:
+
+- Return statements/implicit returns
+- Variable declarations
+- Destructuring assignments binds
+- Pod literal fields
+- Call arguments
