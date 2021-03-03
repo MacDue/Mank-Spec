@@ -7,11 +7,11 @@ but can also incorporate control low such as in if and switch expressions.
 Unless otherwise stated, all expressions are assumed to be [rvalues](#binding-points).
 
 
-Note that in expressions that require certain types, references to those type are also valid (references are transparent).
+Note that in expressions that require certain types, references to those types are also valid (references are transparent).
 
 ### Expression groups
 
-Expressions are split into serveral categories based on where they can occur and their precedence.
+Expressions are split into several categories based on where they can occur and their precedence.
 
 ```ebnf
 Expression = UnaryOperation | BinaryOperation ;
@@ -51,7 +51,7 @@ Path = Identifier, {"::", Identifier}, [Specializations] ;
 - Macro identifiers are used to call to [builtin macros](#builtin-functions-and-macros).
 - Specialized identifiers are used to specialize generic functions or types (in cases where the specializations cannot be inferred).
 - Paths are used to access entities within a named scope.
-  - Currently paths are only used to access enum members.
+  - Currently, paths are only used to access enum members.
 
 ```mank
 foo_bar        # identifier
@@ -68,7 +68,7 @@ Given a expression `f` with a callable type `F` ([lambda](#lambda-types) or [fun
 f(arg1, arg2, … argn)
 ```
 
-calls `f` with arguments `arg1, arg2, … argn`. The arguments must be [assignable](#assignability) to the parameter types of `F`. Arguments are evaluated in order (left to right) before the function is called. The type of the expression is the return type of `F`, and it's value is passed back to the caller when the function returns.
+calls `f` with arguments `arg1, arg2, … argn`. The arguments must be [assignable](#assignability) to the parameter types of `F`. Arguments are evaluated in order (left to right) before the function is called. The type of the expression is the return type of `F`, and its value is passed back to the caller when the function returns.
 
 
 If the return type of `F` is a [reference type](#reference-types), then the expression can be used as an lvalue.
@@ -242,7 +242,7 @@ Note:
 
 Note that postfix expressions always have higher precedence than unary operations,
 which have always have higher precedence than binary operations. However, unlike
-binary operations amoung unary and postfix expressions all operations/expressons
+binary operations among unary and postfix expressions, all operations/expressions
 have equal precedence.
 
 ### Index accesses
@@ -262,7 +262,7 @@ If `a` is a [fixed-size array](#fixed-size-array-types) or [list type](#list-typ
   - if `a` is an [lvalue](#binding-points), `a[idx]` is an lvalue.
 
 Additionally, if `a` is a [fixed-size array](#fixed-size-array-types):
-  - constant indexes must be in range
+  - constant indexes must be in its range
 
 If `a` is a [string type](#string-types):
   - the type of `a[idx]` is always `char`
@@ -274,7 +274,6 @@ Given an expression `x`
 x.f
 ```
 accesses the field of the value `x` given by `f`, where `f` is an [identifier](#identifiers).
-The type of the field access is defined by the accessed type.
 
 If `x` is a [fixed-size array](#fixed-size-array-types), [list type](#list-types), or [string](#string-types):
   - `x.length` gives the length as an integer
@@ -329,9 +328,9 @@ PodLiteral = Path, "{", [FieldInitializerList], "}" ;
 FieldInitializerList = FieldInitializer, { ",", FieldInitializer } ;
 FieldInitializer = ".", Identifier, "=", Expression ;
 ```
-In a pod literal the order of fields does not matter, however a pod literal is invalid
-if it does not provide all the fields from the pod declaration, or repeats fields.
-Additionally each field initializer's type must match the field type.
+In a pod literal the order of fields does not matter, however, a pod literal is invalid
+if it does not provide all the fields from the pod declaration or repeats fields.
+Additionally, each field initializer's type must match the field type.
 
 
 Given the following declarations:
@@ -376,6 +375,63 @@ a := [1,2,true,"hello"];    # invalid literal (mixed element types)
 ```
 
 ### Lambda expressions
+
+A lambda expression creates a lambda function with and has a [lambda type](#lambda-types).
+
+```ebnf
+LambdaExpression = "\", [LambdaParameterList], "->", [Return], Block ;
+LambdaParameterList = {identifier, [TypeAnnotation]} ;
+Return = TypeAnnotation ;
+```
+
+Type annotations for lambda paramters and return types are optional and can be (in most cases),
+inferred based on the context and usage of the lambda. If the types cannot be inferred the lambda is invalid.
+
+
+The type of the lambda is a lambda type, with the corresponding parameter and return types to the lambda expression.
+
+```mank
+add := \x, y -> { x + y };  # untyped lambda that adds to values
+result := add(1,2);         # inferred to be \i32, i32 -> i32 based on usage
+
+sub := \x: f64, y: f64 -> f64 { x - y }; # explicitly type annotated lambda
+```
+
+#### Closures/captures
+
+A lambda can form a closure if it captures its variables/values from its surrounding (lexical)
+environment. Values are captured [by value](#type-storage) (in contrary to by reference), though existing references in the outer scope can be captured (though it's possible for this to lead to dangling references if the lambda is returned from a function).
+
+
+The environment of a lambda with captures is heap-allocated and lives as long as the lambda.
+
+Some simple closures:
+
+```mank
+language_name := "Mank";
+display_name := \ -> {
+  println!("The {name} Programming Language", language_name);
+}
+display_name();
+```
+The above demonstrates a simple capture, the variable `language_name` is
+declared in the scope outside of the lambda (note that there are no declarations within the lambda).
+However, the lambda captures the variable from its outer scope, making it able to print it in its body.
+
+
+Running this snippet will result in: ``The Mank Programming Language`` being printed.
+
+
+```mank
+make_adder := \x -> { \y -> { x + y } };
+add_10 := make_adder(10);
+fifteen := add_10(5); # = 15
+```
+
+This is another example that demonstrates closures and returning lambdas from functions.
+When `make_adder` is called it returns it's nested lambda (`\y -> { x + y }`),
+which captures the value of `x`. Then when `add_10` is called, the captured x is added to the
+parameter `y` to result in 15.
 
 ### As casts
 

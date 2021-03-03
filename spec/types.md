@@ -187,7 +187,7 @@ Binding points are the points in programs where new [references](#reference-type
 Note that once a reference is bound, there's no way to change the reference to point to another value.
 
 
-References can only be assigned to lvalues, which are values that have a memory address (so can appear on the _left_ of an assigment). All other values are rvalues. For example, a named variable has a memory address, but a literal expression does not.
+References can only be assigned to lvalues, which are values that have a memory address (so can appear on the _left_ of an assignment). All other values are rvalues. For example, a named variable has a memory address, but a literal expression does not.
 
 
 The current binding points are:
