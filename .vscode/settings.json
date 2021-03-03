@@ -1,0 +1,21 @@
+{
+  "grammarly.overrides": [
+    {
+      "files": [
+        "**/spec/spec.md"
+      ],
+      "config": {
+        "audience": "expert",
+        "dialect": "british",
+        "domain": "technical",
+        "emotions": [
+          "neutral"
+        ],
+        "goals": [
+          "inform",
+          "describe"
+        ]
+      }
+    }
+  ]
+}
