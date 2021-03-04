@@ -14,7 +14,7 @@
 
 ### While loops
 
-### Structural bindings
+### Structural binding statement
 
 
 

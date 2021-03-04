@@ -1,3 +1,21 @@
+## Structural bindings
+
+Structural bindings are a way of binding names to the elements/fields (nested or otherwise) of the initializer.
+They are used within the [structural binding statement](#structural-binding-statement)
+and [switch expressions](#switch-expressions).
+
+```ebnf
+StructuralBinding = TupleBindings | PodBindings ;
+TupleBindings = "(", [TupleBindingList], ")" ;
+TupleBindingList = TupleBind, {",", TupleBind}, [","] ;
+TupleBind = (identifier, [TypeAnnotation]) |  StructuralBinding ;
+PodBindings = "{", [PodBindingList], "}" ;
+PodBindingList = PodBind, {",", PodBind}, [","] ;
+PodBind = ".", identifier, [ "/", (identifier |  StructuralBinding) ] ;
+```
+
+//TODO: Explain bindings & what types they work thing + examples
+
 ## Expressions
 
 Expressions are loosely defined as anything that can yield a value. In Mank
@@ -31,6 +49,11 @@ PrimaryExpression =
   | LambdaExpression
   | IfExpression
   | SwitchExpression ;
+
+ExpressionWithoutStructs
+  = (* same as Expression but cannot include struct literals*) ;
+ExpressionWithoutCallsOrStructs
+  = (* same as Expression but cannot include calls or struct literals *) ;
 ```
 
 ### Paths and identifiers
@@ -38,7 +61,7 @@ PrimaryExpression =
 Paths and identifier expressions are used to refer to entities within a scope.
 
 ```ebnf
-Identifier = identifiers ;
+Identifier = identifier ;
 MarcoIdentifier = Identifier, "!" ;
 SpecializedIdentifier = Identifier, Specializations ;
 Specializations = "@", "(", TypeList, ")" ;
@@ -116,7 +139,7 @@ If the expression is `true` the "then" block (first block) is executed, otherwis
 
 
 ```ebnf
-IfExpression = "if", Expression, Block, ["else", (IfExpression | Block)] ;
+IfExpression = "if", ExpressionWithoutStructs, Block, ["else", (IfExpression | Block)] ;
 ```
 
 If both branches are supplied, they both must evaluate to the same type (which can be void). Then the "if" expression will take the value of the selected block.
@@ -155,8 +178,10 @@ y := -+-x;  # mutiple unary operations -(+(-(x)))
 ### Binary operations
 
 ```ebnf
-BinaryOperation = Expression, binary_op, Expression ;
+BinaryOperation = (Expression, binary_op, Expression)
+                | (Expression, "as", Type) ;
 ```
+The second form of binary expression is an [as cast](#as-casts), and is described separately.
 
 <div class="page"/>
 
@@ -433,6 +458,60 @@ When `make_adder` is called it returns it's nested lambda (`\y -> { x + y }`),
 which captures the value of `x`. Then when `add_10` is called, the captured x is added to the
 parameter `y` to result in 15.
 
+```mank
+fun make_counter: \ -> i32 (start: i32) {
+  count := start - 1;
+  \ -> i32 {
+    count += 1;
+    count
+  }
+}
+```
+
+```mank
+counter := make_counter(4);
+counter() # = 4
+counter() # = 5
+counter() # = 6
+```
+
+Lambdas can also mutate their captured variables, as shown with the simple counter above.
+
 ### As casts
 
+An "as cast" converts values between types. They're the only way to convert between types as there's no implict conversions.
+
+
+They're a special form of [binary operation](#binary-operations).
+
+
+Allowed (base) casts:
+| Source type | Target type   | Notes         |
+|-------------|---------------|---------------|
+|   `T`       |   `T`         | if the source and target types are the same the cast is a nop |
+|  `i32`      |  `f32`        |  |
+|  `i32`      |  `f64`        |  |
+| `f32`       | `i32`         | fractional part discarded (round down) |
+| `f64`       | `i32`         | fractional part discarded (round down) |
+| `i32`       | `char`        | if the integer does not fit within the char the top bits are truncated |
+| `char`      | `i32`         | the integer is the characters' ASCII value       |
+| `bool`      | `i32`         | 1 if the bool is true 0 otherwise                |
+| `char`      | `str`         | creates a new string consisting of a single char |
+
+Addtional casts are allowable due to the transitive (directed) closure of these base casts.
+For example the cast `true as f64` is allowed as you can cast a `bool` to a `i32` then to a `f64`.
+A cast like `1.2 as bool` would be invalid (since there's no casts from any type to `bool`).
+
 ### Switch expressions
+
+"Switch" expressions select a block to execute based on which case a value matches.
+
+```ebnf
+SwitchExpression
+  = "switch", ExpressionWithoutStructs, "{", [SwitchCaseList] "}" ;
+SwitchCaseList = SwitchCase, { "," SwitchCase }, [","] ;
+SwitchCase
+  = ExpressionWithoutCallsOrStructs, [StructuralBindings], "=>", Block ;
+```
+
+// TODO switch spec
