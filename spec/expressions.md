@@ -1,6 +1,6 @@
 ## Structural bindings
 
-Structural bindings are a way of binding names to the elements/fields (nested or otherwise) of the initializer.
+Structural bindings are a way of binding names to the elements/fields (nested or otherwise) of an initializer.
 They are used within the [structural binding statement](#structural-binding-statement)
 and [switch expressions](#switch-expressions).
 
@@ -8,13 +8,71 @@ and [switch expressions](#switch-expressions).
 StructuralBinding = TupleBindings | PodBindings ;
 TupleBindings = "(", [TupleBindingList], ")" ;
 TupleBindingList = TupleBind, {",", TupleBind}, [","] ;
-TupleBind = (identifier, [TypeAnnotation]) |  StructuralBinding ;
+TupleBind = Bind | StructuralBinding ;
 PodBindings = "{", [PodBindingList], "}" ;
 PodBindingList = PodBind, {",", PodBind}, [","] ;
-PodBind = ".", identifier, [ "/", (identifier |  StructuralBinding) ] ;
+PodBind = ".", identifier, ([ "/", (Bind |  StructuralBinding) ] | TypeAnnotation);
+Bind = identifier, [TypeAnnotation] ;
 ```
 
-//TODO: Explain bindings & what types they work thing + examples
+Given these definitions and a instance of `Example`
+```mank
+pod Other {
+  apple: f64
+}
+
+pod Example {
+  foo: i32,
+  bar: f64,
+  nested: Other,
+  tuple: (f64, bool, str)
+}
+```
+
+the following are all valid bindings:
+```mank
+# binds foo and bar to the fields with the same name
+{.foo, .bar}
+# the same with explict types
+{.foo:i32, .bar:f64}
+# binds the fields foo and bar, but renames them to my_foo and my_bar
+{.foo/my_foo, .bar/my_bar:f64}
+# binds foo (like before), but also binds the nested field apple
+{.foo, .nested/{.apple}}
+# binds bar (like before), but also the nested tuple elements as a, b, and c
+{.bar, .tuple/(a, b, c)}
+```
+(in this context to "bind" a field/element means to create a local variable for it)
+
+Given this tuple (where `example` is an instance of `Example`)
+```mank
+(example, (1, true), 5.0)
+```
+
+the following are all valid bindings:
+```mank
+# binds the elements of the tuple to my_example, tuple, and num
+(my_example, tuple, num)
+# binds the first element to a, the nested tuple elements to b and c, and
+# then the final element to d
+(a, (b, c), d)
+# uses a pod binding on the first element, then binds the remaining elements
+({.foo/a}, b, c)
+# binds the elements to a, b, and c with type annotations on a and c
+(a: Example, b, c: f64)
+```
+Note that unlike pod bindings (where fields can be skipped and reordered) tuple bindings must have the same shape as the initializing tuple.
+
+
+Bindings can also take references to fields/elements of initializers if they're [lvalues](#binding-points),
+by annotating the binding with a reference type:
+```mank
+# bind my_exampe as a reference (reference type inferred)
+# also binds c to a reference (full reference type given)
+(my_exampe: ref, b, c: ref f64)
+```
+
+<!-- <div class="page"/> -->
 
 ## Expressions
 
@@ -36,7 +94,7 @@ Expression = UnaryOperation | BinaryOperation ;
 PostfixExpression = PrimaryExpression, {Call, IndexAccess, FieldAccess} ;
 
 PrimaryExpression =
-  | Path
+    Path
   | Identifier
   | MarcoIdentifier
   | SpecializedIdentifier
@@ -50,10 +108,11 @@ PrimaryExpression =
   | IfExpression
   | SwitchExpression ;
 
-ExpressionWithoutStructs
-  = (* same as Expression but cannot include struct literals*) ;
-ExpressionWithoutCallsOrStructs
-  = (* same as Expression but cannot include calls or struct literals *) ;
+ExpressionWithoutStructs = (*
+  same as Expression but cannot include struct literals at the top level *) ;
+ExpressionWithoutCallsOrStructs = (*
+  same as Expression but cannot include calls or struct literals
+  at the top level *) ;
 ```
 
 ### Paths and identifiers
@@ -116,7 +175,7 @@ A block is a possibly empty sequence of statements, optionally ending with an ex
 
 ```ebnf
 Block = "{", [StatementList], [Expression], "}" ;
-StatementList = { Statement ";" } ;
+StatementList = { Statement [";"] } ;
 ```
 
 If a block ends with an expression, the block has the type and value of that expression,
@@ -137,9 +196,9 @@ otherwise, the block is void (with the value the empty tuple).
 "If" expressions conditionally select a block to execute based on a boolean expression.
 If the expression is `true` the "then" block (first block) is executed, otherwise, if given, the "else" block is executed.
 
-
 ```ebnf
-IfExpression = "if", ExpressionWithoutStructs, Block, ["else", (IfExpression | Block)] ;
+IfExpression = "if", IfCondition, Block, ["else", (IfExpression | Block)] ;
+IfCondition = ExpressionWithoutStructs ;
 ```
 
 If both branches are supplied, they both must evaluate to the same type (which can be void). Then the "if" expression will take the value of the selected block.
@@ -183,7 +242,7 @@ BinaryOperation = (Expression, binary_op, Expression)
 ```
 The second form of binary expression is an [as cast](#as-casts), and is described separately.
 
-<div class="page"/>
+<!-- <div class="page"/> -->
 
 | Operator (`binary_op`) | Meaning                 | Definition (given `x`, `y`)          | Applicable types  |
 |-----------------------|-------------------------|--------------------------------------|-------------------|
@@ -211,7 +270,7 @@ The second form of binary expression is an [as cast](#as-casts), and is describe
 Note:
   - for strings: `x + y` is the string concatenation of `x` and `y`.
   - for integers: `x / y` is the integer divison  (truncated towards zero).
-<div class="page"/>
+<!-- <div class="page"/> -->
 
 #### Operator precedence
 <table style="margin-left: auto; margin-right: auto;">
@@ -333,6 +392,8 @@ the expressions in the literal (examples below).
 ```
 
 If all members of a tuple are [lvalues](#binding-points) then the tuple becomes a special lvalue. If used on the left-hand side of an assignment of a tuple with matching types, assigns each lvalue to the corresponding value of the tuple.
+
+<!-- <div class="page"/> -->
 
 ```mank
 a := 1;
@@ -507,11 +568,60 @@ A cast like `1.2 as bool` would be invalid (since there's no casts from any type
 "Switch" expressions select a block to execute based on which case a value matches.
 
 ```ebnf
-SwitchExpression
-  = "switch", ExpressionWithoutStructs, "{", [SwitchCaseList] "}" ;
+SwitchExpression = "switch", SwitchedExpression, "{", [SwitchCaseList] "}" ;
 SwitchCaseList = SwitchCase, { "," SwitchCase }, [","] ;
-SwitchCase
-  = ExpressionWithoutCallsOrStructs, [StructuralBindings], "=>", Block ;
+SwitchCase = MatchExpression, [StructuralBindings], "=>", Block ;
+MatchExpression = ExpressionWithoutCallsOrStructs ;
+SwitchedExpression = ExpressionWithoutStructs ;
 ```
 
-// TODO switch spec
+"Switch" expressions can be used on integer types along with enums. When used with
+a integer type the match expression for each case must be a constant expression.
+
+```mank
+# simple switch against a integer:
+switch number => {
+  1 => { println("one!"); },
+  2 => { println("two!"); },
+  1 + 2 => { println("three!"); }
+}
+```
+
+```mank
+# AST for simple s-expressions (+ 1 2 3 4 (* 5 6 4))
+enum Expr {
+  Number(f64),
+  Add { operands: Expr[] },
+  Mult { operands: Expr[] }
+}
+```
+
+When used with enums each case can (optionally) include a [structural binding](#structural-bindings)
+to extract pod or tuple data from the enum member.
+
+<!-- <div class="page"/> -->
+
+```mank
+fun eval_expr: f64 (expr: Expr) {
+  switch expr {
+    Expr::Number(num) => { num },
+    Expr::Add { .operands } => {
+      sum := 0.;
+      for i in 0 .. operands.length {
+        sum += eval_expr(operands[i]);
+      }
+      sum
+    },
+    Expr::Mult { .operands } => {
+      product := 1.;
+      for i in 0 .. operands.length {
+        product *= eval_expr(operands[i]);
+      }
+      product
+    }
+  }
+}
+```
+Above shows a simple example of a (tagged union) enum being used to represent some [S-expressions](https://en.wikipedia.org/wiki/S-expression), which can
+then be evaluated recursively with a `switch`.
+

@@ -109,6 +109,7 @@ Character literals consist of a single (optionally escaped with `\`) character s
 ```ebnf
 character_literal = "'", [ "\" ], character, "'" ;
 ```
+<!-- <div class="page"/> -->
 
 ```mank
 'a'

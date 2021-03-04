@@ -104,6 +104,7 @@ The empty tuple is used as the void type (`void` in C or C++).
 ```ebnf
 TupleType = "(", [TypeList], ")" ;
 ```
+<!-- <div class="page"/> -->
 
 ```mank
 ()                         # empty tuple/void
@@ -146,6 +147,8 @@ str[]           # list of strings
 i32[][]         # list of lists of integers
 (i32, bool)[]   # list of tuples of i32 and bool
 ```
+
+<!-- <div class="page"/> -->
 
 ## Type and value properties
 
