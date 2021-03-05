@@ -100,6 +100,8 @@ ForRange = ExpressionWithoutStructs ".." ExpressionWithoutStructs ;
 The ranges are exclusive, so `0 .. 100` is `0`, `1`, `2` .., to `99`,
 sometimes written as `[0,100)`.
 
+<!-- Loop counter + counter scope  & start/end mutations -->
+
 ```mank
 # Prints "Hello!" 10 times
 for i in 0 .. 10 {
@@ -143,7 +145,7 @@ loop {
 }
 ```
 
-They are just a convenience and could equivalently be written as:
+These are just a convenience and could equivalently be written as:
 ```mank
 while true {
   println("It never ends!");
@@ -152,13 +154,32 @@ while true {
 
 ### Loop control
 
+Loop control statements allow for the early exit of a loop, or interaction of a
+loop. It is not valid to use these statements outside of a loop.
+
 ```ebnf
 LoopControl = ("break" | "continue"), ";" ;
 ```
 
+Inside a loop:
+- If a `break` is encountered the control flow will jump to the first statement after the loop
+- If a `continue` is encountered the loop will skip to the next iteration
+  -  If the loop is a "for" loop the loop counter will also be incremented
+
+Both of these only apply to one loop at a time so inside a nested loop, a `break` or `continue`
+will only effect the inner most loop.
+
 ### Structural binding statement
+
+A structural binding statement allows elements or fields to be extracted from pod or tuple
+values, using a [structural binding](#structural-bindings).
 
 ```ebnf
 StructuralBindingStatement = "bind", StructuralBinding, "=", Expression, ";" ;
 ```
 
+One handy use case for this is to declare multiple variables at a time, using a
+tuple literal:
+```mank
+bind (a, b, c) = (1, true, 3.0);
+```

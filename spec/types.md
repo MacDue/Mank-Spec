@@ -2,13 +2,19 @@
 
 ```ebnf
 Type = ReferenceType | BaseType ;
-BaseType = TypeName | LambdaType | TupleType | FixedSizeArrayType | ListType ;
+BaseType = TypeName | LambdaType | TupleType
+         | FixedSizeArrayType | ListType | DelimitedType ;
+DelimitedType = "|", Type, "|" ;
 
 TypeList = Type, { ",", Type }, [","] ;
 ```
 
 `TypeName` covers any type referred to by name, such as primitive types and pod types.
 Other types are constructed from simpler types, e.g. a tuple type could be `(i32, bool)`.
+
+
+Type delimitations (`DelimitedType`) just group types, they can sometimes make
+things easier to read, and are necessary in some cases.
 
 ### Boolean types
 
@@ -91,7 +97,7 @@ Pod types are [declared](#pod-declarations) at the top level of a module and the
 An enum (from enumeration) is a collection of named members which may be used as constants within a program (e.g. each member could be a state).
 
 
-Optionally each member can be associated with tuple or pod-like data to form a tagged union. The data can then be extracted when matched against in [swtich expression](#switch-expressions).
+Optionally each member can be associated with tuple or pod-like data to form a tagged union. The data can then be extracted when matched against in a [switch expression](#switch-expressions).
 
 
 Enums are [declared](#enum-declarations) at the top level of a module and then referred to by name in the rest of the program.
@@ -127,9 +133,11 @@ ReturnType = Type ;
 ```mank
 \ -> char         # lambda with no parameters, returning a char
 \char -> ()       # lambda that takes a char and returns void
-\i32, i32 -> i32  # lambda that takes two integers returning a integer
-# lambda taking a list of integers and a lambda and retuning a list of integers
+\i32, i32 -> i32  # lambda that takes two integers returning an integer
+# lambda taking a list of integers and a lambda, returning a list of integers
 \i32[], \i32 -> i32 -> i32[]
+# written with explict delimiters
+\i32[], |\i32 -> i32| -> i32[]
 ```
 
 ### List types

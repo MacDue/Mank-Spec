@@ -15,10 +15,10 @@ a unique name, otherwise, you get a `redeclaration error`. Shadowing is allowed 
 
 ### Constant declarations
 
-Constant declarations bind a [name](#identifiers) a compile-time constant. These are global and can be used between functions.
+Constant declarations bind a [name](#identifiers) to a compile-time constant. These are global and can be used between functions.
 
 
-Constants can refer to other constants (that are possibly declared later) as long as it's not recursive definition.
+Constants can refer to other constants (that are possibly declared later) as long as it's not a recursive definition.
 
 
 ```ebnf
@@ -58,7 +58,7 @@ Return = TypeAnnotation ;
 ParameterList = "(", {identifier, TypeAnnotation}, ")" ;
 ```
 
-Top-level functions are not strictly first-class functions, though they will be coerced to lambdas where needed (e.g. if you try to pass top-level function as an argument to a function accepting a lambda).
+Top-level functions are not strictly first-class functions, though they will be coerced to lambdas where needed (e.g. if you try to pass a top-level function as an argument to a function accepting a lambda).
 This is done by automatically wrapping the function within a [lambda expression](#lambda-expressions) with a matching signature (same return and parameter types).
 
 
@@ -66,11 +66,10 @@ It is not possible to nest top-level functions to create closures/non-local acce
 with [lambdas](#lambda-expressions).
 
 
-A function is free to mutate any local variables, or parameters passed to it (though unless these are references or heap-allocated data like [lists](#list-types) this is not be
-observable outside the function).
+A function is free to mutate any local variables, or parameters passed to it (though unless these are references or heap-allocated data like [lists](#list-types) this is not observable outside the function).
 
 
-If a function body ends with an expression (without a semicolon after it), then that expression is returned from the function. Values can also be returned early, or explictly with [return statements](#return-statements).
+If a function body ends with an expression (without a semicolon after it), then that expression is returned from the function. Values can also be returned early, or explicitly with [return statements](#return-statements).
 
 ```mank
 fun max: i32 (a: i32, b: i32) {
@@ -95,7 +94,7 @@ proc add: i32 (a: i32, b: i32) {
   a + b
 }
 
-# tests never can have returns or paramters
+# tests never can have returns or parameters
 test that_addtion_works {
   assert!(1 + 1 == 2);
 }
@@ -126,20 +125,20 @@ pod MyPod {
   baz: ref f64
 }
 
-# Invalid recurisve definition
-pod Recurisve {
-  foo: Recurisve;
+# Invalid recursive definition
+pod Recursive {
+  foo: Recursive;
 }
 
 # This is allowed due to the indirection from the reference
-pod Recurisve {
-  foo: ref Recurisve;
+pod Recursive {
+  foo: ref Recursive;
 }
 ```
 
 ### Enum declarations
 
-Enum declarations bind a [name](#identifiers) to a [enum type](#enum-types).
+Enum declarations bind a [name](#identifiers) to an [enum type](#enum-types).
 
 
 Each member within the enum must have a unique name. As with pods, recursive enums

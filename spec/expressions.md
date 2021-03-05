@@ -76,7 +76,7 @@ by annotating the binding with a reference type:
 
 ## Expressions
 
-Expressions are loosely defined as anything that can yield a value. In Mank
+Expressions are loosely defined as anything that can yield a value. In Mank,
 this can be simple constants, variables, or mathematical formulas, as in most languages,
 but can also incorporate control low such as in if and switch expressions.
 
@@ -130,7 +130,7 @@ Path = Identifier, {"::", Identifier}, [Specializations] ;
 ```
 
 - Identifiers can refer to variables, global constants, and functions.
-- Macro identifiers are used to call to [builtin macros](#builtin-functions-and-macros).
+- Macro identifiers are used to call [builtin macros](#builtin-functions-and-macros).
 - Specialized identifiers are used to specialize generic functions or types (in cases where the specializations cannot be inferred).
 - Paths are used to access entities within a named scope.
   - Currently, paths are only used to access enum members.
@@ -259,9 +259,9 @@ The second form of binary expression is an [as cast](#as-casts), and is describe
 | `>=`                  | greater than or equal   | `¬(x < y)`                           |  integers, floats          |
 | `==`                  | equal to                | `(x >= y) && (x <= y)`               |  integers, floats          |
 | `!=`                  | not equal to            | `¬(x == y)`                          |  integers, floats          |
-| `&`                   | bitwise and             | `0` at all bit postions where `x` and `y` differ (keep bit otherwise)   | integers |
-| `|!`                  | bitwise xor             | `1` at all bit postions where `x` and `y` differ (zero otherwise)       | integers |
-| `|`                   | bitwise or              | `1` at all bit postions where at least of on `x` and `y` contains a `1` | integers |
+| `&`                   | bitwise and             | `0` at all bit positions where `x` and `y` differ (keep bit otherwise)   | integers |
+| `|!`                  | bitwise xor             | `1` at all bit positions where `x` and `y` differ (zero otherwise)       | integers |
+| `|`                   | bitwise or              | `1` at all bit positions where at least of one `x` and `y` contains a `1` | integers |
 | `&&`                  | logical and             | `if x { y } else { false }`          |  booleans                  |
 | `||`                  | logical or              | `if x { true } else { y }`           |  booleans                  |
 `value_of` gives the result of evaluating an expression.
@@ -269,7 +269,7 @@ The second form of binary expression is an [as cast](#as-casts), and is describe
 
 Note:
   - for strings: `x + y` is the string concatenation of `x` and `y`.
-  - for integers: `x / y` is the integer divison  (truncated towards zero).
+  - for integers: `x / y` is the integer division (truncated towards zero).
 <!-- <div class="page"/> -->
 
 #### Operator precedence
@@ -346,7 +346,7 @@ If `a` is a [fixed-size array](#fixed-size-array-types) or [list type](#list-typ
   - if `a` is an [lvalue](#binding-points), `a[idx]` is an lvalue.
 
 Additionally, if `a` is a [fixed-size array](#fixed-size-array-types):
-  - constant indexes must be in its range
+  - constant indexes must be in range
 
 If `a` is a [string type](#string-types):
   - the type of `a[idx]` is always `char`
@@ -362,7 +362,7 @@ accesses the field of the value `x` given by `f`, where `f` is an [identifier](#
 If `x` is a [fixed-size array](#fixed-size-array-types), [list type](#list-types), or [string](#string-types):
   - `x.length` gives the length as an integer
 
-If `x` is a [enum type](#enum-types):
+If `x` is an [enum type](#enum-types):
   - `x.tag` gives the unique tag of the enum member x contains as an integer
 
 If `x` is a [pod type](#pod-types):
@@ -377,11 +377,10 @@ A tuple literal constructs a value of a [tuple type](#tuple-types).
 
 ```ebnf
 TupleLiteral = ("(", [TupleElements], ")") ;
-TupleElements = Expression, ",", [Expression, {"," Expression}, [","]];
+TupleElements = Expression, ",", [Expression, {"," Expression}, [","]] ;
 ```
 
-The type of the tuple literal is tuple type where the element types are the types of
-the expressions in the literal (examples below).
+The types of the expressions in the tuple literal are used to derive the tuple type:
 
 ```mank
 (1, true, 3.0)   # three element tuple -- (i32, bool, f64)
@@ -441,7 +440,7 @@ cassie := Dog { .age = 10, .favorite_toy = harrold, .name = "Cassie" };
 woody := Dog { .name "Woody", .age = 6, .favorite_toy = DogToy::Stick };
 ```
 
-### Array litetals
+### Array literals
 
 An array literal construct a value of a [fixed-size array type](#fixed-size-array-types).
 
@@ -451,7 +450,9 @@ ExpressionList = Expression { ",", Expression } ;
 ```
 
 There must be at least one element in the array literal, and all elements must have matching types.
-The type of the array literal is a fixed-size array of the element type, with the size being the number of elements in the literal (examples below).
+
+
+The type of the array literal is a fixed-size array of the element type, with the size being the number of elements in the literal:
 
 ```mank
 a := [];                    # invalid empty literal (unknown type)
@@ -470,7 +471,7 @@ LambdaParameterList = {identifier, [TypeAnnotation]} ;
 Return = TypeAnnotation ;
 ```
 
-Type annotations for lambda paramters and return types are optional and can be (in most cases),
+Type annotations for lambda parameters and return types are optional and can be (in most cases),
 inferred based on the context and usage of the lambda. If the types cannot be inferred the lambda is invalid.
 
 
@@ -486,7 +487,7 @@ sub := \x: f64, y: f64 -> f64 { x - y }; # explicitly type annotated lambda
 #### Closures/captures
 
 A lambda can form a closure if it captures its variables/values from its surrounding (lexical)
-environment. Values are captured [by value](#type-storage) (in contrary to by reference), though existing references in the outer scope can be captured (though it's possible for this to lead to dangling references if the lambda is returned from a function).
+environment. Values are captured [by value](#type-storage) (contrary to by reference), though existing references in the outer scope can be captured (though this can lead to dangling references if the lambda is returned from a function).
 
 
 The environment of a lambda with captures is heap-allocated and lives as long as the lambda.
@@ -540,7 +541,7 @@ Lambdas can also mutate their captured variables, as shown with the simple count
 
 ### As casts
 
-An "as cast" converts values between types. They're the only way to convert between types as there's no implict conversions.
+An "as cast" converts values between types. They're the only way to convert between types as there are no implicit conversions.
 
 
 They're a special form of [binary operation](#binary-operations).
@@ -559,9 +560,9 @@ Allowed (base) casts:
 | `bool`      | `i32`         | 1 if the bool is true 0 otherwise                |
 | `char`      | `str`         | creates a new string consisting of a single char |
 
-Addtional casts are allowable due to the transitive (directed) closure of these base casts.
-For example the cast `true as f64` is allowed as you can cast a `bool` to a `i32` then to a `f64`.
-A cast like `1.2 as bool` would be invalid (since there's no casts from any type to `bool`).
+Additional casts are allowable due to the transitive (directed) closure of these base casts.
+For example, the cast `true as f64` is allowed as you can cast a `bool` to an `i32` then to an `f64`.
+A cast like `1.2 as bool` would be invalid (since there are no casts from any type to `bool`).
 
 ### Switch expressions
 
