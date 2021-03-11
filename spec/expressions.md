@@ -587,10 +587,10 @@ SwitchedExpression = ExpressionWithoutStructs ;
 ```
 
 "Switch" expressions can be used on integer types along with enums. When used with
-a integer type the match expression for each case must be a constant expression.
+an integer type the match expression for each case must be a constant expression.
 
 ```mank
-# simple switch against a integer:
+# simple switch against an integer:
 switch number => {
   1 => { println("one!"); },
   2 => { println("two!"); },
