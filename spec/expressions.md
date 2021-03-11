@@ -15,7 +15,7 @@ PodBind = ".", identifier, ([ "/", (Bind |  StructuralBinding) ] | TypeAnnotatio
 Bind = identifier, [TypeAnnotation] ;
 ```
 
-Given these definitions and a instance of `Example`
+Given these definitions and an instance of `Example`
 ```mank
 pod Other {
   apple: f64
@@ -42,7 +42,7 @@ the following are all valid bindings:
 # binds bar (like before), but also the nested tuple elements as a, b, and c
 {.bar, .tuple/(a, b, c)}
 ```
-(in this context to "bind" a field/element means to create a local variable for it)
+(in this context, to "bind" a field/element means to create a local variable for it)
 
 Given this tuple (where `example` is an instance of `Example`)
 ```mank
@@ -53,7 +53,7 @@ the following are all valid bindings:
 ```mank
 # binds the elements of the tuple to my_example, tuple, and num
 (my_example, tuple, num)
-# binds the first element to a, the nested tuple elements to b and c, and
+# binds the first element to a the nested tuple elements to b and c, and
 # then the final element to d
 (a, (b, c), d)
 # uses a pod binding on the first element, then binds the remaining elements
@@ -61,7 +61,7 @@ the following are all valid bindings:
 # binds the elements to a, b, and c with type annotations on a and c
 (a: Example, b, c: f64)
 ```
-Note that unlike pod bindings (where fields can be skipped and reordered) tuple bindings must have the same shape as the initializing tuple.
+Note that unlike pod bindings (where fields can be skipped and reordered), tuple bindings must have the same shape as the initializing tuple.
 
 
 Bindings can also take references to fields/elements of initializers if they're [lvalues](#binding-points),
@@ -98,7 +98,7 @@ PrimaryExpression =
   | Identifier
   | MarcoIdentifier
   | SpecializedIdentifier
-  | Literal
+  | PrimitiveLiteral
   | ParenthesisedExpression
   | Block
   | PodLiteral
@@ -107,13 +107,15 @@ PrimaryExpression =
   | LambdaExpression
   | IfExpression
   | SwitchExpression ;
-
 ExpressionWithoutStructs = (*
   same as Expression but cannot include struct literals at the top level *) ;
 ExpressionWithoutCallsOrStructs = (*
   same as Expression but cannot include calls or struct literals
   at the top level *) ;
 ```
+
+`PrimitiveLiteral` expressions are any literal for a primitive type (including strings)
+given in the [lexical elements](#lexical-elements) section.
 
 ### Paths and identifiers
 
@@ -447,10 +449,17 @@ An array literal construct a value of a [fixed-size array type](#fixed-size-arra
 ```ebnf
 ArrayLiteral = "[", [ExpressionList], "]" ;
 ExpressionList = Expression { ",", Expression } ;
+
+ArrayRepeatLiteral = "[", "=", Expression, ";", Expression, "]" ;
+
 ```
 
-There must be at least one element in the array literal, and all elements must have matching types.
+There are two types of array literals:
 
+- Normal list literals
+  - For these, there must be at least one element in the array literal, and all elements must have matching types
+- Repeat literals
+  - These say how many times to repeat (given by the second expression -- which must be constant) an initializer (the first expression)
 
 The type of the array literal is a fixed-size array of the element type, with the size being the number of elements in the literal:
 
@@ -459,6 +468,7 @@ a := [];                    # invalid empty literal (unknown type)
 a := [1,2,3,4,5];           # i32[5]
 a := [[1.1,2.1],[1.2,2.2]]; # f64[2,2]
 a := [1,2,true,"hello"];    # invalid literal (mixed element types)
+a := [=0; 10];              # i32[10] (repeat literal)
 ```
 
 ### Lambda expressions

@@ -169,6 +169,9 @@ Inside a loop:
 Both of these only apply to one loop at a time so inside a nested loop, a `break` or `continue`
 will only effect the inner most loop.
 
+
+Using these outside of a loop is invalid.
+
 ### Structural binding statement
 
 A structural binding statement allows elements or fields to be extracted from pod or tuple
