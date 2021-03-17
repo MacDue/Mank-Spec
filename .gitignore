@@ -1,1 +1,2 @@
-/spec/*.pdf
+*.pdf
+!spec.pdf
