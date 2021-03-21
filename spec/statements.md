@@ -22,7 +22,7 @@ These allow expressions to appear in a statement context.
 ExpressionStatement = Expression, ? ";" ?;
 ```
 
-For expressions with no observable side-effects this has little purpose, but
+For expressions with no observable side-effects, this has little purpose, but
 it's necessary for certain expressions such as [ifs](#if-expressions) and [calls](#calls).
 
 ```mank
@@ -77,7 +77,7 @@ AssignmentStatement = LValueExpression, "=", Expression, ";" ;
 LValueExpression = Expression ;
 ```
 
-There is a special case where mutiple lvalues can be assigned if the left-hand side
+There is a special case where multiple lvalues can be assigned if the left-hand side
 is an [lvalue tuple](#tuple-literals).
 
 ```mank
@@ -103,7 +103,7 @@ sometimes written as `[0,100)`.
 <!-- Loop counter + counter scope  & start/end mutations -->
 
 ```mank
-# Prints "Hello!" 10 times
+# prints "Hello!" 10 times
 for i in 0 .. 10 {
   println("Hello!");
 }
@@ -166,8 +166,8 @@ Inside a loop:
 - If a `continue` is encountered the loop will skip to the next iteration
   -  If the loop is a "for" loop the loop counter will also be incremented
 
-Both of these only apply to one loop at a time so inside a nested loop, a `break` or `continue`
-will only effect the inner most loop.
+Both of these only apply to one loop at a time so, inside a nested loop, a `break` or `continue`
+will only effect the innermost loop.
 
 
 Using these outside of a loop is invalid.

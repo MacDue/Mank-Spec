@@ -13,7 +13,7 @@ digit =  '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
 ### Comments
 
 ```mank
-# This is a comment.
+# this is a comment
 ```
 
 Single line comments start with `#` and stop at the end of the line.

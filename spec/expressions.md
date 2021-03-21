@@ -33,7 +33,7 @@ the following are all valid bindings:
 ```mank
 # binds foo and bar to the fields with the same name
 {.foo, .bar}
-# the same with explict types
+# the same with explicit types
 {.foo:i32, .bar:f64}
 # binds the fields foo and bar, but renames them to my_foo and my_bar
 {.foo/my_foo, .bar/my_bar:f64}
@@ -146,7 +146,7 @@ Foo::Bar       # path
 
 ### Calls
 
-Given a expression `f` with a callable type `F` ([lambda](#lambda-types) or [function](#functionprocedure-declarations)),
+Given an expression `f` with a callable type `F` ([lambda](#lambda-types) or [function](#functionprocedure-declarations)),
 
 ```mank
 f(arg1, arg2, … argn)
@@ -345,7 +345,7 @@ accesses the element of `a` at the index `idx`.
 
 If `a` is a [fixed-size array](#fixed-size-array-types) or [list type](#list-types):
   - the type of `a[idx]` is the element type of the array
-  - if `a` is an [lvalue](#binding-points), `a[idx]` is an lvalue.
+  - if `a` is an [lvalue](#binding-points), `a[idx]` is an lvalue
 
 Additionally, if `a` is a [fixed-size array](#fixed-size-array-types):
   - constant indexes must be in range
@@ -368,8 +368,8 @@ If `x` is an [enum type](#enum-types):
   - `x.tag` gives the unique tag of the enum member x contains as an integer
 
 If `x` is a [pod type](#pod-types):
-  - `x.<field>` accesses a field as defined the pod's [declaration](#pod-declarations), the access type is the type of the declared field.
-  - if `x` is an [lvalue](#binding-points), `x.f` is an lvalue.
+  - `x.<field>` accesses a field as defined the pod's [declaration](#pod-declarations), the access type is the type of the declared field
+  - if `x` is an [lvalue](#binding-points), `x.f` is an lvalue
 
 Accessing non-existent fields is an error.
 
@@ -633,6 +633,6 @@ fun eval_expr: f64 (expr: Expr) {
   }
 }
 ```
-Above shows a simple example of a (tagged union) enum being used to represent some [S-expressions](https://en.wikipedia.org/wiki/S-expression), which can
+The above shows a simple example of a (tagged union) enum being used to represent some [S-expressions](https://en.wikipedia.org/wiki/S-expression), which can
 then be evaluated recursively with a `switch`.
 

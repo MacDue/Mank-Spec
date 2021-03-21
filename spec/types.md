@@ -136,7 +136,7 @@ ReturnType = Type ;
 \i32, i32 -> i32  # lambda that takes two integers returning an integer
 # lambda taking a list of integers and a lambda, returning a list of integers
 \i32[], \i32 -> i32 -> i32[]
-# written with explict delimiters
+# written with explicit delimiters
 \i32[], |\i32 -> i32| -> i32[]
 ```
 
@@ -167,13 +167,13 @@ Types either match or are different.
 All named types (primitives like strings, bools, ints, along with pods) are always
 different to any other type (other than their own type).
 
-- At the top level, any type can be matched with a reference of its type.
-  - This excludes references nested in composite types.
-    -  e.g. ``(i32, ref bool) != (i32, bool)``.
-- Fixed-size arrays match if they're the same length and their element types match.
-- Lists match if their element types match.
-- Tuples match if all elements of the tuples match, in the same order.
-- Lambdas match if their parameters and return types match respectively.
+- At the top level, any type can be matched with a reference of its type
+  - This excludes references nested in composite types
+    -  e.g. ``(i32, ref bool) != (i32, bool)``
+- Fixed-size arrays match if they're the same length and their element types match
+- Lists match if their element types match
+- Tuples match if all elements of the tuples match, in the same order
+- Lambdas match if their parameters and return types match respectively
 
 Note for references there are additional restrictions on the types of values they can be assigned to alongside matching types.
 
@@ -187,10 +187,10 @@ Strings are either stored within the program's static data or on the heap (depen
 ### Assignability
 
 A value `x` is assignable to a type `T` if:
-  - x's type is identical to T.
-  - T is the target type in an [assignment statement](#assignments) and is a reference to x's type, in which case the referenced value is set to x.
-  - x's type is a reference to T, x will be (automatically) dereferenced to a value of type T.
-  - T is a reference to x's type at a binding point, and x is an lvalue.
+  - x's type is identical to T
+  - T is the target type in an [assignment statement](#assignments) and is a reference to x's type, in which case the referenced value is set to x
+  - x's type is a reference to T, x will be (automatically) dereferenced to a value of type T
+  - T is a reference to x's type at a binding point, and x is an lvalue
 
 #### Binding points
 

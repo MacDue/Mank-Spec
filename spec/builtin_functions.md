@@ -129,7 +129,7 @@ Calculates the inverse sine of `f`.
 ```mank
 fun atan2: f64 (x: f64, y: f64)
 ```
-Calculates the arc tangent of the argument.
+Calculates the (2-argument) arctangent of `(x,y)`.
 
 ### Utility functions
 
@@ -143,7 +143,7 @@ to be in base 10.
 
 If the parse succeeds:
   - the tuple `(n, true)` is returned (where `n` is the parsed integer)
-  - otherwise, `(-1, false)` is returned, the second element `false` indicates the parse failed.
+  - otherwise, `(-1, false)` is returned, the second element `false` indicates the parse failed
 
 ---
 

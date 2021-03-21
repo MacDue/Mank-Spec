@@ -115,22 +115,22 @@ FieldDecl = identifier, ":", Type ;
 ```
 
 ```mank
-# An empty pod
+# an empty pod
 pod Empty {}
 
-# Pod called "MyPod" with 3 fields (foo, bar, baz)
+# pod called "MyPod" with 3 fields (foo, bar, baz)
 pod MyPod {
   foo: i32,
   bar: bool[5],
   baz: ref f64
 }
 
-# Invalid recursive definition
+# invalid recursive definition
 pod Recursive {
   foo: Recursive;
 }
 
-# This is allowed due to the indirection from the reference
+# this is allowed due to the indirection from the reference
 pod Recursive {
   foo: ref Recursive;
 }
