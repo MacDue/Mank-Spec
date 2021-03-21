@@ -90,7 +90,7 @@ Note that in expressions that require certain types, references to those types a
 Expressions are split into several categories based on where they can occur and their precedence.
 
 ```ebnf
-Expression = UnaryOperation | BinaryOperation ;
+Expression = BinaryOperation ;
 PostfixExpression = PrimaryExpression, {Call, IndexAccess, FieldAccess} ;
 
 PrimaryExpression =
@@ -240,7 +240,8 @@ y := -+-x;  # mutiple unary operations -(+(-(x)))
 
 ```ebnf
 BinaryOperation = (Expression, binary_op, Expression)
-                | (Expression, "as", Type) ;
+                | (Expression, "as", Type)
+                | UnaryOperation ;
 ```
 The second form of binary expression is an [as cast](#as-casts), and is described separately.
 
@@ -581,7 +582,7 @@ A cast like `1.2 as bool` would be invalid (since there are no casts from any ty
 ```ebnf
 SwitchExpression = "switch", SwitchedExpression, "{", [SwitchCaseList] "}" ;
 SwitchCaseList = SwitchCase, { "," SwitchCase }, [","] ;
-SwitchCase = MatchExpression, [StructuralBindings], "=>", Block ;
+SwitchCase = (MatchExpression, [StructuralBindings]) | "else", "=>", Block ;
 MatchExpression = ExpressionWithoutCallsOrStructs ;
 SwitchedExpression = ExpressionWithoutStructs ;
 ```
@@ -594,7 +595,8 @@ an integer type the match expression for each case must be a constant expression
 switch number => {
   1 => { println("one!"); },
   2 => { println("two!"); },
-  1 + 2 => { println("three!"); }
+  1 + 2 => { println("three!"); },
+  else => { println("something else!"); }
 }
 ```
 
@@ -636,3 +638,5 @@ fun eval_expr: f64 (expr: Expr) {
 The above shows a simple example of a (tagged union) enum being used to represent some [S-expressions](https://en.wikipedia.org/wiki/S-expression), which can
 then be evaluated recursively with a `switch`.
 
+
+In a similar fashion to `if` expressions, if a switch is exhaustive (covers all possible cases), then it can evaluate to a value. The type of the switch comes from the type of all the cases (blocks) in the switch, all of which must have matching types.

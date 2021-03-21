@@ -170,3 +170,19 @@ enum Event {
   Quit                            # and without any associated data
 }
 ```
+
+### Type aliases
+
+Type aliases are used to rename an existing type or to give a name to a composite type (such as a tuple).
+
+```ebnf
+TypeAlias = "typedef", AliasName, "=", Type ;
+AliasName = identifier ;
+```
+Using type aliases can help to document code and improve readability.
+
+```mank
+typedef Nat = i32;
+typedef PureFunction = \Nat -> Nat;
+typedef Error = (i32, str);
+```
