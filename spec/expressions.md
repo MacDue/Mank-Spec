@@ -64,7 +64,7 @@ the following are all valid bindings:
 Note that unlike pod bindings (where fields can be skipped and reordered), tuple bindings must have the same shape as the initializing tuple.
 
 
-Bindings can also take references to fields/elements of initializers if they're [lvalues](#binding-points),
+Bindings can also take references to fields/elements of initializers if they are [lvalues](#binding-points),
 by annotating the binding with a reference type:
 ```mank
 # bind my_exampe as a reference (reference type inferred)
@@ -418,7 +418,8 @@ FieldInitializer = ".", Identifier, "=", Expression ;
 ```
 In a pod literal the order of fields does not matter, however, a pod literal is invalid
 if it does not provide all the fields from the pod declaration or repeats fields.
-Additionally, each field initializer's type must match the field type.
+Additionally, the type of each field initializer must match the type of the field in
+the pod declaration.
 
 
 Given the following declarations:
@@ -527,7 +528,7 @@ fifteen := add_10(5); # = 15
 ```
 
 This is another example that demonstrates closures and returning lambdas from functions.
-When `make_adder` is called it returns it's nested lambda (`\y -> { x + y }`),
+When `make_adder` is called it returns its nested lambda (`\y -> { x + y }`),
 which captures the value of `x`. Then when `add_10` is called, the captured x is added to the
 parameter `y` to result in 15.
 
@@ -552,10 +553,10 @@ Lambdas can also mutate their captured variables, as shown with the simple count
 
 ### As casts
 
-An "as cast" converts values between types. They're the only way to convert between types as there are no implicit conversions.
+An "as cast" converts values between types. They are the only way to convert between types as there are no implicit conversions.
 
 
-They're a special form of [binary operation](#binary-operations).
+They are a special form of [binary operation](#binary-operations).
 
 
 Allowed (base) casts:

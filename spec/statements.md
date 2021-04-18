@@ -23,7 +23,7 @@ ExpressionStatement = Expression, ? ";" ?;
 ```
 
 For expressions with no observable side-effects, this has little purpose, but
-it's necessary for certain expressions such as [ifs](#if-expressions) and [calls](#calls).
+it is necessary for certain expressions such as [ifs](#if-expressions) and [calls](#calls).
 
 ```mank
 println("Hello World");
@@ -54,7 +54,7 @@ The type of the return value must match the function declaration,
 the return value can only bit omitted for functions that return `void`.
 
 
-Once a "return" statement is reached, any statements after it won't be executed.
+Once a "return" statement is reached, any statements after it will not be executed.
 
 ```ebnf
 ReturnStatement = "return", [Expression], ";" ;

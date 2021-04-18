@@ -20,7 +20,7 @@ Single line comments start with `#` and stop at the end of the line.
 
 
 Comments cannot start within a string literal.
-All comments are treated as whitespace, and they don't currently have any semantic meaning (e.g. documentation generation).
+All comments are treated as whitespace, and they do not currently have any semantic meaning (e.g. documentation generation).
 
 <!-- <div class="page"/> -->
 
@@ -132,6 +132,6 @@ string_literal = '"', { ['\'], character }, '"'
 
 ```mank
 "Hello World"
-"I'm on a typewriter!\r\n"  # string with legacy line ending
-"Name set to \"Ben\""       # string containing escaped double quotes
+"I am on a typewriter!\r\n"  # string with legacy line ending
+"Name set to \"Ben\""        # string containing escaped double quotes
 ```

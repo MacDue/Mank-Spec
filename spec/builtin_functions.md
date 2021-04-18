@@ -241,7 +241,7 @@ constructs a [curried](https://en.wikipedia.org/wiki/Currying) version of `f`.
 
 ---
 
-The `print!` macro (and it's friends `println!`, `eprint!`, and `eprintln!`) are
+The `print!` macro (and its friends `println!`, `eprint!`, and `eprintln!`) are
 used to format and print a string.
 
 
@@ -269,7 +269,7 @@ failing expression and, if provided, the string (message) are printed to `stderr
 
 ```mank
 assert!(1 + 1 == 2);
-assert!(v.length > 0, "can't pop back on empty vector");
+assert!(v.length > 0, "can not pop back on empty vector");
 ```
 
 ---

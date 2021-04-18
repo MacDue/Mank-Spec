@@ -170,7 +170,7 @@ different to any other type (other than their own type).
 - At the top level, any type can be matched with a reference of its type
   - This excludes references nested in composite types
     -  e.g. ``(i32, ref bool) != (i32, bool)``
-- Fixed-size arrays match if they're the same length and their element types match
+- Fixed-size arrays match if they are the same length and their element types match
 - Lists match if their element types match
 - Tuples match if all elements of the tuples match, in the same order
 - Lambdas match if their parameters and return types match respectively
@@ -182,7 +182,7 @@ Note for references there are additional restrictions on the types of values the
 All types with exception of [strings](#string-types) and [lists](#list-types) are stored on the stack,
 and are copied by value when assigned to a variable or passed to a function (for [reference types](#Reference-types) the value is just the pointer/memory address).
 
-Strings are either stored within the program's static data or on the heap (depending on if they're compile-time constants or not), and lists are always heap-allocated. When these types are copied only their internal pointers are copied. This poses no issues for strings (as they're immutable), but it does mean lists need to be explicitly copied in some cases (e.g. before passing a list to a function that does some in-place processing while also maintaining the original list).
+Strings are either stored within the program's static data or on the heap (depending on if they are compile-time constants or not), and lists are always heap-allocated. When these types are copied only their internal pointers are copied. This poses no issues for strings (as they are immutable), but it does mean lists need to be explicitly copied in some cases (e.g. before passing a list to a function that does some in-place processing while also maintaining the original list).
 
 ### Assignability
 
@@ -195,7 +195,7 @@ A value `x` is assignable to a type `T` if:
 #### Binding points
 
 Binding points are the points in programs where new [references](#reference-types) can be introduced (or copied).
-Note that once a reference is bound, there's no way to change the reference to point to another value.
+Note that once a reference is bound, there is no way to change the reference to point to another value.
 
 
 References can only be assigned to lvalues, which are values that have a memory address (so can appear on the _left_ of an assignment). All other values are rvalues. For example, a named variable has a memory address, but a literal expression does not.

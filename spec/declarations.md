@@ -18,7 +18,7 @@ a unique name, otherwise, you get a `redeclaration error`. Shadowing is allowed 
 Constant declarations bind a [name](#identifiers) to a compile-time constant. These are global and can be used between functions.
 
 
-Constants can refer to other constants (that are possibly declared later) as long as it's not a recursive definition.
+Constants can refer to other constants (that are possibly declared later) as long as it does not lead to a recursive definition.
 
 
 ```ebnf
@@ -89,7 +89,7 @@ proc main (args: str) {
   println!("Hello {name}", args[1]);
 }
 
-# invalid! procedures don't return a value
+# invalid! procedures do not return a value
 proc add: i32 (a: i32, b: i32) {
   a + b
 }
@@ -143,7 +143,7 @@ Enum declarations bind a [name](#identifiers) to an [enum type](#enum-types).
 
 Each member within the enum must have a unique name. As with pods, recursive enums
 are invalid (e.g. using the enum being declared in the pod, or tuple data of a member).
-If a member has pod data then that member's declaration must follow the same rules as a normal [pod declaration](#pod-declarations).
+If a member has pod data then the pod data declaration must follow the same rules as a normal [pod declaration](#pod-declarations).
 
 ```ebnf
 EnumDecl = "enum", EnumName, "{", [Members], "}" ;
